@@ -7,6 +7,22 @@ function App() {
   const [mode, setMode] = useState("summarize");
   const [loading, setLoading] = useState(false);
 
+
+  const clearAll = () => {
+    setText("");
+    setResult("");
+  };
+
+  const copyResult = () => {
+    navigator.clipboard.writeText(result);
+    alert("Copied to Clipboard!");
+  };
+
+
+
+
+
+
   const processText = async () => {
     setLoading(true);
 

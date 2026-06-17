@@ -17,7 +17,7 @@ body {
   background: #0f172a;
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0px 0px 25px rgba(0,0,0,0.4);
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.4);
 }
 
 .hero h1 {
@@ -26,11 +26,9 @@ body {
   font-size: 42px;
   white-space: nowrap;
 
-  background: linear-gradient(
-    135deg,
-    #60a5fa,
-    #a855f7
-  );
+  background: linear-gradient(135deg,
+      #60a5fa,
+      #a855f7);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -52,7 +50,7 @@ textarea {
 }
 
 button {
-   width: 100%;
+  width: 100%;
   padding: 14px;
   margin-top: 20px;
   border: none;
@@ -61,11 +59,9 @@ button {
   font-size: 16px;
   font-weight: 600;
 
-  background: linear-gradient(
-    135deg,
-    #3b82f6,
-    #8b5cf6
-  );
+  background: linear-gradient(135deg,
+      #3b82f6,
+      #8b5cf6);
 
   color: white;
 
@@ -79,8 +75,8 @@ button:hover {
 
 .output {
   margin-top: 25px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px;
   border-radius: 14px;
 }
@@ -92,4 +88,16 @@ button:hover {
 
 .output p {
   line-height: 1.7;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button-group button {
+  width: auto;
+  flex: 1;
+  margin-top: 0;
 }
