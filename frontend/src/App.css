@@ -97,7 +97,37 @@ button:hover {
 }
 
 .button-group button {
-  width: auto;
   flex: 1;
+  width: auto;
   margin-top: 0;
 }
+
+.counter {
+  text-align: right;
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.output {
+  min-height: 120px;
+}
+
+.history {
+  margin-top: 25px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.history h3 {
+  color: #60a5fa;
+}
+
+.history-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+

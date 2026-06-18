@@ -6,6 +6,9 @@ function App() {
   const [result, setResult] = useState("");
   const [mode, setMode] = useState("summarize");
   const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [listening, setListening] = useState(false);
+
 
 
   const clearAll = () => {
@@ -18,34 +21,99 @@ function App() {
     alert("Copied to Clipboard!");
   };
 
+  const startListening = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
 
+    if (!SpeechRecognition) {
+      alert("Speech Recognition not supported.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+    recognition.start();
+
+    setListening(true);
+
+    recognition.onstart = () => {
+      console.log("Recognition Started");
+    };
+
+    recognition.onspeechstart = () => {
+      console.log("Speech detected");
+    };
+
+    recognition.onspeechend = () => {
+      console.log("Speech ended");
+    };
+
+
+    recognition.onresult = (event) => {
+      console.log("RESULT EVENT:", event);
+
+      const transcript =
+        event.results[0][0].transcript;
+
+      console.log("Transcript:", transcript);
+
+      setText(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.log("Speech Error:", event.error);
+    };
+
+    recognition.onend = () => {
+      console.log("Recognition Ended");
+      setListening(false);
+    };
+  }
 
 
 
 
   const processText = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await fetch(
-      "http://127.0.0.1:8000/process",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "http://127.0.0.1:8000/process",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text,
+            mode,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      setResult(data.result);
+
+      setHistory((prev) => [
+        {
+          mode,
+          input: text,
+          output: data.result,
         },
-        body: JSON.stringify({
-          text: text,
-          mode: mode,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    setResult(data.result);
-    setLoading(false);
+        ...prev,
+      ]);
+    } catch (error) {
+      setResult("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
     <div className="app">
       <div className="hero">
@@ -72,24 +140,63 @@ function App() {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-
+        <p className="counter">
+          Characters: {text.length}
+        </p>
         <br />
         <br />
 
-        <button
-          onClick={processText}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Process Text"}
-        </button>
+        <div className="button-group">
+          <button
+            onClick={processText}
+            disabled={loading || !text.trim()}
+          >
+            {loading ? "Processing..." : "Process Text"}
+          </button>
+
+          <button onClick={clearAll}>
+            Clear
+          </button>
+
+          <button onClick={copyResult}>
+            Copy
+          </button>
+
+          <button onClick={startListening}>
+            {listening
+              ? "🎙️ Listening..."
+              : "🎙️ Voice Input"}
+          </button>
+        </div>
         <div className="output">
           <h3>✨ AI Response</h3>
           <p>{result || "Your result will appear here..."}</p>
         </div>
+        {history.length > 0 && (
+          <div className="history">
+            <h3>📜 History</h3>
+
+            {history.map((item, index) => (
+              <div className="history-item" key={index}>
+                <strong>
+                  {item.mode.charAt(0).toUpperCase() + item.mode.slice(1)}
+                </strong>
+                <p>
+                  <b>Input:</b> {item.input}
+                </p>
+
+                <p>
+                  <b>Output:</b> {item.output}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default App;
+
 
